@@ -303,13 +303,12 @@ texto_total.grid(row=2, column=3, padx=41)
 
 
 # Botones
-
 botones = ["total", "recibo", "guardar", "resetear"]
 columnas = 0
 for boton in botones:
     boton = Button(panel_botones,
                    text=boton.title(),
-                   font=("Dosis", 9, "bold"),
+                   font=("Dosis", 10, "bold"),
                    fg="gray",
                    bg="black",
                    bd=1,
