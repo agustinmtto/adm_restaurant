@@ -1,73 +1,88 @@
 from tkinter import *
 
-from prompt_toolkit.key_binding.bindings.mouse import CONTROL
+operador = ""
 
+def click_boton(numero):
+    global operador
+    operador = operador + numero
+    visor_calculadora.delete(0, END)
+    visor_calculadora.insert(END, operador)
+
+def borrar():
+    global operador
+    operador = ""
+    visor_calculadora.delete(0,END)
+
+
+def obtener_resultado():
+    global operador
+    res = str(eval(operador))
+    visor_calculadora.delete(0, END)
+    visor_calculadora.insert(0, res)
+    operador = ""
 # INICIAR Y CONFIGURAR TKINTER
 aplicacion = Tk()  # Crear la ventana principal de la aplicación
 
-# Configurar el tamaño de la ventana (1020x630 píxeles) y su posición inicial (en la esquina superior izquierda)
+# Configurar el tamaño de la ventana (pantalla completa)
 aplicacion.geometry("1020x630+0+0")
 
 # Evitar que la ventana sea redimensionable (ancho y alto fijos)
 aplicacion.resizable(0, 0)
 
 # Establecer el título de la ventana
-aplicacion.title("Mi Restaurante - Sistema de Facturacion")
+aplicacion.title("Mi Restaurante - Sistema de Facturación")
 
 # Establecer el color de fondo de la ventana principal
 aplicacion.config(bg="azure4")
 
 # PANELES
-# Los paneles son contenedores que ayudan a organizar los widgets (elementos gráficos) dentro de la ventana.
-
-# Panel superior (un contenedor sin bordes ni relleno)
+# Panel superior (para el título)
 panel_superior = Frame(aplicacion, bd=1, relief=FLAT)
-panel_superior.pack(side=TOP)  # Colocar el panel en la parte superior
+panel_superior.pack(side=TOP, fill="x")  # Ocupatodo el ancho de la ventana
 
 # Etiqueta en el panel superior que muestra el título de la aplicación
-etiqueta_titulo = Label(panel_superior, text="Sistema de Facturacion", fg="black",
+etiqueta_titulo = Label(panel_superior, text="Sistema de Facturación", fg="black",
                         font=("Dosis", 58), bg="gray", width=27)
-etiqueta_titulo.grid(row=0, column=0)  # Ubicar la etiqueta en la primera fila y columna del panel
+etiqueta_titulo.pack()  # Centrar el título
 
-# Panel izquierdo (contendrá varios sub-paneles de productos)
-panel_izquierdo = Frame(aplicacion, bd=1, relief=FLAT)
-panel_izquierdo.pack(side=LEFT)  # Colocar el panel en la parte izquierda
+# Panel principal para el contenido debajo del título
+panel_principal = Frame(aplicacion, bd=1, relief=FLAT)
+panel_principal.pack(fill="both", expand=True)  # Ocupatodo el espacio restante
 
-# Panel para mostrar los costos (ubicado en la parte inferior del panel izquierdo)
-panel_costos = Frame(panel_izquierdo, bd=1, relief=FLAT, bg="gray", padx=50)
-panel_costos.pack(side=BOTTOM)
+# Panel izquierdo (contendrá los sub-paneles de productos)
+panel_izquierdo = Frame(panel_principal, bd=1, relief=FLAT, bg="azure4")
+panel_izquierdo.pack(side=LEFT, fill="both", expand=True)
 
-# Panel para mostrar las opciones de comida
+# Panel derecho (contendrá la calculadora, recibo y botones)
+panel_derecha = Frame(panel_principal, bd=1, relief=FLAT, bg="azure4")
+panel_derecha.pack(side=RIGHT, fill="both", expand=True)
+
+# Sub-paneles dentro del panel izquierdo
+panel_costos = Frame(panel_izquierdo, bd=1, relief=FLAT, bg="gray")
+panel_costos.pack(side=BOTTOM, fill="x")
+
 panel_comida = LabelFrame(panel_izquierdo, text="Comida", font=("Dosis", 19, "bold"),
-                           bd=1, relief=FLAT, fg="azure4")
-panel_comida.pack(side=LEFT)
+                          bd=1, relief=FLAT, fg="azure4")
+panel_comida.pack(side=LEFT, fill="both", expand=True)
 
-# Panel para mostrar las opciones de bebida
 panel_bebida = LabelFrame(panel_izquierdo, text="Bebidas", font=("Dosis", 19, "bold"),
-                           bd=1, relief=FLAT, fg="azure4")
-panel_bebida.pack(side=LEFT)
+                          bd=1, relief=FLAT, fg="azure4")
+panel_bebida.pack(side=LEFT, fill="both", expand=True)
 
-# Panel para mostrar las opciones de postre
 panel_postre = LabelFrame(panel_izquierdo, text="Postres", font=("Dosis", 19, "bold"),
-                           bd=1, relief=FLAT, fg="azure4")
-panel_postre.pack(side=LEFT)
+                          bd=1, relief=FLAT, fg="azure4")
+panel_postre.pack(side=LEFT, fill="both", expand=True)
 
-# PANEL DERECHO
-# Panel derecho donde se mostrarán la calculadora, el recibo y los botones
-panel_derecha = Frame(aplicacion, bd=1, relief=FLAT)
-panel_derecha.pack(side=RIGHT)
-
-# Panel para la calculadora
+# Sub-paneles dentro del panel derecho
 panel_calculadora = Frame(panel_derecha, bd=1, relief=FLAT, bg="gray")
-panel_calculadora.pack()
+panel_calculadora.pack(fill="both", expand=True)
 
-# Panel para mostrar el recibo de la factura
 panel_recibo = Frame(panel_derecha, bd=1, relief=FLAT, bg="gray")
-panel_recibo.pack()
+panel_recibo.pack(fill="both", expand=True)
 
-# Panel para los botones de acción (como calcular o generar la factura)
 panel_botones = Frame(panel_derecha, bd=1, relief=FLAT, bg="gray")
-panel_botones.pack()
+panel_botones.pack(fill="both", expand=True)
+
 
 # LISTAS DE PRODUCTOS
 # Se definen las opciones disponibles en el sistema para comida, bebida y postre
@@ -325,5 +340,55 @@ texto_recibo = Text(panel_recibo,
                     height=10)
 texto_recibo.grid(row=0,
                   column=0)
+
+# Calculadora
+visor_calculadora = Entry(panel_calculadora,
+                          font=("Dosis", 16, "bold"),
+                          width=32,
+                          bd=1)
+visor_calculadora.grid(row=0, column=0, columnspan=4)
+
+botones_calculadora = ["7", "8", "9","+","4","5","6","-", "1",
+                       "2", "3","x","CE","Borrar", "0","/" ]
+botones_guardados = []
+
+fila = 1
+columna = 0
+for boton in botones_calculadora:
+    boton = Button(panel_calculadora,
+                   text=boton.title(),
+                   font=("Dosis",10,"bold"),
+                   fg="black",
+                   bg="gray",
+                   width=8
+                   )
+    botones_guardados.append(boton)
+    boton.grid(row=fila,
+               column=columna)
+    if columna == 3:
+        fila += 1
+    columna += 1
+
+    if columna == 4:
+        columna = 0
+
+botones_guardados[0].config(command=lambda : click_boton("7"))
+botones_guardados[1].config(command=lambda : click_boton("8"))
+botones_guardados[2].config(command=lambda : click_boton("9"))
+botones_guardados[3].config(command=lambda : click_boton("+"))
+botones_guardados[4].config(command=lambda : click_boton("4"))
+botones_guardados[5].config(command=lambda : click_boton("5"))
+botones_guardados[6].config(command=lambda : click_boton("6"))
+botones_guardados[7].config(command=lambda : click_boton("-"))
+botones_guardados[8].config(command=lambda : click_boton("1"))
+botones_guardados[9].config(command=lambda : click_boton("2"))
+botones_guardados[10].config(command=lambda : click_boton("3"))
+botones_guardados[11].config(command=lambda : click_boton("*"))
+botones_guardados[14].config(command=lambda : click_boton("0"))
+botones_guardados[15].config(command=lambda : click_boton("/"))
+botones_guardados[13].config(command=borrar)
+botones_guardados[12].config(command=obtener_resultado)
+
+
 # Evitar que la ventana se cierre inmediatamente
 aplicacion.mainloop()
