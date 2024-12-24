@@ -2,6 +2,8 @@
 
 Este proyecto es un sistema de facturación desarrollado en Python utilizando la biblioteca **Tkinter** para la creación de interfaces gráficas. El sistema permite calcular los costos de comidas, bebidas y postres, generar un recibo detallado y guardar los datos del recibo en un archivo.
 
+## ACTUALMENTE EN PROCESO DE AJUSTE A VENTANAS EN WINDOWS, PRESENTA UN PROBLEMA DE COMPATIBILIDAD
+
 ## Características
 
 - **Selección de productos:** Permite elegir entre una lista de comidas, bebidas y postres.
